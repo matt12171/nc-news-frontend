@@ -37,3 +37,16 @@ ul {
   justify-content: center;
   align-items: center;
 }
+
+/* .card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} */
+
+.article-img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  object-position: bottom;
+}
