@@ -38,6 +38,9 @@ export const Comments = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (event.target[0].value.length === 0) {
+      return alert("Comment cannot be empty!");
+    }
     postComment(article_id, event.target[0].value)
       .then((response) => {
         console.log("Comment added");
