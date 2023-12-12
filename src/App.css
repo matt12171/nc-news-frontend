@@ -50,3 +50,12 @@ ul {
   object-fit: cover;
   object-position: bottom;
 }
+
+.comment-title {
+  text-align: center;
+}
+
+.bottom-comments {
+  display: flex;
+  justify-content: space-between;
+}
