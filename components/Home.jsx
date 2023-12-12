@@ -1,13 +1,8 @@
-import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-export const api = axios.create({
-  baseURL: "https://nc-news-cg4z.onrender.com/api",
-});
 
 export const Home = (articles) => {
-  console.log(articles.element);
   return (
     <div className="home">
       <h2>Articles</h2>
