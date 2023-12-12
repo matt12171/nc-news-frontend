@@ -13,3 +13,16 @@ export const getArticlesId = (article_id) => {
 export const getComments = (article_id) => {
   return api.get(`/articles/${article_id}/comments`);
 };
+
+export const patchArticleVote = (article_id, votes) => {
+  return api.patch(`/articles/${article_id}`, {
+    inc_votes: votes,
+  });
+};
+
+export const postComment = (article_id, comment) => {
+  return api.post(`/articles/${article_id}/comments`, {
+    username: "grumpy19",
+    body: comment,
+  });
+};

@@ -1,27 +1,31 @@
 import { useParams } from "react-router-dom";
 import { getComments } from "./axios";
 import { useEffect, useState } from "react";
-
+import { postComment } from "./axios";
 export function timeConvert(datePosted) {
   const old = new Date(`${datePosted}`);
   const today = new Date();
 
-  const differenceInMilliseconds = today - old;
+  const differenceInSeconds = Math.floor((today - old) / 1000);
 
-  const hoursDifference = Math.floor(
-    differenceInMilliseconds / (1000 * 60 * 60)
-  );
+  const minutesDifference = Math.floor(differenceInSeconds / 60);
 
-  if (hoursDifference >= 24) {
-    const daysDifference = Math.floor(hoursDifference / 24);
-    if (daysDifference >= 365) {
-      const yearsDifference = Math.floor(daysDifference / 365);
-      return `${yearsDifference} year(s) ago`;
-    } else {
-      return `${daysDifference} day(s) ago`;
-    }
+  if (minutesDifference < 60) {
+    return `${minutesDifference} minute${
+      minutesDifference !== 1 ? "s" : ""
+    } ago`;
+  } else if (minutesDifference < 1440) {
+    const hoursDifference = Math.floor(minutesDifference / 60);
+    return `${hoursDifference} hour${hoursDifference !== 1 ? "s" : ""} ago`;
   } else {
-    return `${hoursDifference} hour(s) ago`;
+    const daysDifference = Math.floor(minutesDifference / 1440);
+    if (daysDifference < 365) {
+      const yearsDifference = Math.floor(daysDifference / 365);
+      return `${daysDifference} day${daysDifference !== 1 ? "s" : ""} ago`;
+    } else {
+      const yearsDifference = Math.floor(daysDifference / 365);
+      return `${yearsDifference} year${yearsDifference !== 1 ? "s" : ""} ago`;
+    }
   }
 }
 
@@ -29,13 +33,29 @@ export const Comments = () => {
   const { article_id } = useParams();
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [commentCheck, setCommentCheck] = useState(false);
+  const [commentAdded, setCommentAdded] = useState(false);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    postComment(article_id, event.target[0].value)
+      .then((response) => {
+        console.log("Comment added");
+        setCommentAdded(true);
+      })
+      .catch((err) => {
+        alert("Unable to post");
+      });
+    event.target[0].value = "";
+    setCommentCheck(true);
+  };
 
   useEffect(() => {
     getComments(article_id).then((response) => {
       setComments(response.data.comments);
       setIsLoading(false);
     });
-  }, []);
+  }, [commentAdded]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -44,16 +64,30 @@ export const Comments = () => {
   return (
     <div>
       <h3 className="comment-title">Comments</h3>
+      <form onSubmit={handleSubmit}>
+        <label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Write a comment..."
+            id="textboxid"
+          />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+      {commentCheck ? <p>Comment Added!</p> : ""}
       <ul>
         {comments.map((comment, index) => {
           return (
             <li key={index}>
               <p>{comment.body}</p>
-              <div className="bottom-comments"><p>
-                Submitted by <b>{comment.author}</b>{" "}
-                {timeConvert(comment.created_at)}
-              </p>
-              <p>{comment.votes} Votes</p></div>
+              <div className="bottom-comments">
+                <p>
+                  Submitted by <b>{comment.author}</b>{" "}
+                  {timeConvert(comment.created_at)}
+                </p>
+                <p>{comment.votes} votes</p>
+              </div>
             </li>
           );
         })}
