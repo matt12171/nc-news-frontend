@@ -1,13 +1,6 @@
-import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
-export const api = axios.create({
-  baseURL: "https://nc-news-cg4z.onrender.com/api",
-});
 
 export const Home = (articles) => {
-  console.log(articles.element);
   return (
     <div className="home">
       <h2>Articles</h2>
@@ -21,7 +14,7 @@ export const Home = (articles) => {
               </p>{" "}
               <div className="bottom-of-article">
                 <p>- {article.author}</p>
-                <Link to={""}>
+                <Link to={`/article/${article.article_id}/comments`}>
                   <p>{article.comment_count} comments</p>
                 </Link>
                 <p>{article.votes} likes</p>
