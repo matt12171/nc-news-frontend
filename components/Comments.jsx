@@ -35,22 +35,25 @@ export const Comments = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [commentCheck, setCommentCheck] = useState(false);
   const [commentAdded, setCommentAdded] = useState(false);
+  const [commentLoading, setCommentLoading] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if (event.target[0].value.length === 0) {
       return alert("Comment cannot be empty!");
     }
+    setCommentLoading(true);
     postComment(article_id, event.target[0].value)
       .then((response) => {
         console.log("Comment added");
         setCommentAdded(true);
+        setCommentCheck(true);
+        setCommentLoading(false);
       })
       .catch((err) => {
         alert("Unable to post");
       });
     event.target[0].value = "";
-    setCommentCheck(true);
   };
 
   useEffect(() => {
@@ -79,6 +82,7 @@ export const Comments = () => {
         <input type="submit" value="Submit" />
       </form>
       {commentCheck ? <p>Comment Added!</p> : ""}
+      {commentLoading ? <p>Comment loading...</p> : ""}
       <ul>
         {comments.map((comment, index) => {
           return (
