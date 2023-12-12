@@ -1,4 +1,3 @@
 export const Header = () => {
-    return;
-  };
-  
+  return <header>NC-News</header>;
+};

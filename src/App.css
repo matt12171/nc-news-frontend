@@ -1,0 +1,39 @@
+header {
+  border: black solid 1px;
+  text-align: center;
+  padding: 30px;
+}
+
+.panelButtons {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 20px;
+  /* position: fixed; */
+}
+
+li {
+  border: black solid 1px;
+  list-style-type: none;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+.bottom-of-article {
+  display: flex;
+  justify-content: space-between;
+}
+
+ul {
+  display: flex;
+  flex-direction: column;
+
+  padding: 0px;
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
