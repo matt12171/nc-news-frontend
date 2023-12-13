@@ -22,7 +22,7 @@ export const Body = () => {
     <div id="body">
       <Routes>
         <Route path="/" element={<Home element={articles} />} />
-        <Route path="/:topic" element={<Home element={articles}/>} />
+        <Route path="/:filterTopic" element={<Home element={articles}/>} />
         <Route path="/article/:article_id" element={<Article />} />
         <Route path="/article/:article_id/comments" element={<Comments />} />
       </Routes> 

@@ -104,3 +104,7 @@ button {
   margin-right: 10px;
   margin-left: 10px;
 }
+
+ul {
+  padding-left: 0px;
+}
