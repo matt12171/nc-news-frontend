@@ -48,18 +48,23 @@ export const Comments = () => {
     setCommentDeleted(false)
     setCommentCheck(false);
     if (event.target[0].value.length === 0) {
-      return alert("Comment cannot be empty!");
+      return Toastify({
+        text: "Comment cannot be empty!",
+        duration: 4000,
+      }).showToast();
     }
     setCommentLoading(true);
     postComment(article_id, event.target[0].value, user)
       .then((response) => {
-        console.log("Comment added");
         commentAdded ? setCommentAdded(false) : setCommentAdded(true);
         setCommentCheck(true);
         setCommentLoading(false);
       })
       .catch((err) => {
-        alert("Unable to post");
+        Toastify({
+          text: "Unable to post",
+          duration: 4000,
+        }).showToast();
       });
     event.target[0].value = "";
   };
@@ -76,7 +81,13 @@ export const Comments = () => {
       })
       setCommentDeleting(false);
       setCommentDeleted(true)
-    });
+    }).catch((err)=> {
+      setCommentDeleting(false)
+      Toastify({
+        text: "Unable to delete",
+        duration: 4000,
+      }).showToast();
+    })
   };
 
   useEffect(() => {

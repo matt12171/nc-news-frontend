@@ -12,7 +12,10 @@ export const Home = (articles) => {
   const arrowClicked = (index, direction) => {
     for (let i = 0; i < votedPosts.length; i++) {
       if (articles.element[index].article_id === votedPosts[i]) {
-        return alert("Already voted");
+        return Toastify({
+          text: "Already voted!",
+          duration: 4000,
+        }).showToast();
       }
     }
     if (direction === "up") {
@@ -24,10 +27,12 @@ export const Home = (articles) => {
           console.log("Vote added");
         })
         .catch((err) => {
-          alert("Vote did not update");
+          Toastify({
+            text: "Vote did not update",
+            duration: 4000,
+          }).showToast();
         });
       votedPosts.push(articles.element[index].article_id);
-      
     } else if (direction === "down") {
       setBottomClickedArrowIndex(
         bottomClickedArrowIndex === index ? null : index
@@ -39,10 +44,12 @@ export const Home = (articles) => {
           console.log("Vote added");
         })
         .catch((err) => {
-          alert("Vote did not update");
+          Toastify({
+            text: "Vote did not update",
+            duration: 4000,
+          }).showToast();
         });
       votedPosts.push(articles.element[index].article_id);
-      
     }
   };
 
