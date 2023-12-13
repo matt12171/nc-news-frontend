@@ -53,7 +53,7 @@ export const Comments = () => {
                 Submitted by <b>{comment.author}</b>{" "}
                 {timeConvert(comment.created_at)}
               </p>
-              <p>{comment.votes} votes</p></div>
+              <p>{comment.votes} Votes</p></div>
             </li>
           );
         })}
