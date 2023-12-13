@@ -1,7 +1,9 @@
 import { useParams } from "react-router-dom";
 import { getComments } from "./axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { postComment } from "./axios";
+import { UsernameContext } from "../context/UsernameContext";
+import { deleteComment } from "./axios";
 export function timeConvert(datePosted) {
   const old = new Date(`${datePosted}`);
   const today = new Date();
@@ -36,9 +38,14 @@ export const Comments = () => {
   const [commentCheck, setCommentCheck] = useState(false);
   const [commentAdded, setCommentAdded] = useState(false);
   const [commentLoading, setCommentLoading] = useState(false);
+  const [commentDeleting, setCommentDeleting] = useState(false);
+  const [commentDeleted, setCommentDeleted] = useState(false)
+  const { user, setUser } = useContext(UsernameContext);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setCommentDeleted(false)
+    setCommentCheck(false);
     if (event.target[0].value.length === 0) {
       return alert("Comment cannot be empty!");
     }
@@ -46,7 +53,7 @@ export const Comments = () => {
     postComment(article_id, event.target[0].value)
       .then((response) => {
         console.log("Comment added");
-        setCommentAdded(true);
+        commentAdded ? setCommentAdded(false) : setCommentAdded(true);
         setCommentCheck(true);
         setCommentLoading(false);
       })
@@ -54,6 +61,17 @@ export const Comments = () => {
         alert("Unable to post");
       });
     event.target[0].value = "";
+  };
+
+  const handleDelete = (comment_id) => {
+    setCommentDeleted(false)
+    setCommentCheck(false);
+    setCommentDeleting(true);
+    deleteComment(comment_id).then(() => {
+      commentAdded ? setCommentAdded(false) : setCommentAdded(true);
+      setCommentDeleting(false);
+      setCommentDeleted(true)
+    });
   };
 
   useEffect(() => {
@@ -81,13 +99,25 @@ export const Comments = () => {
         </label>
         <input type="submit" value="Submit" />
       </form>
+      {commentDeleting ? <p>Comment Deleting...</p> : ""}
+      {commentDeleted ? <p>Comment Deleted!</p> : ""}
       {commentCheck ? <p>Comment Added!</p> : ""}
       {commentLoading ? <p>Comment loading...</p> : ""}
       <ul>
         {comments.map((comment, index) => {
           return (
             <li key={index}>
-              <p>{comment.body}</p>
+              <div className="top-comments-card">
+                <p>{comment.body}</p>
+                {user === comment.author ? (
+                  <button onClick={() => handleDelete(comment.comment_id)}>
+                    Delete
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
+
               <div className="bottom-comments">
                 <p>
                   Submitted by <b>{comment.author}</b>{" "}

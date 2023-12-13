@@ -82,3 +82,12 @@ ul {
 
   /* font-size: 14pt; */
 }
+
+.top-comments-card {
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  height: 25px;
+}
