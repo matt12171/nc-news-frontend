@@ -69,7 +69,11 @@ export const Comments = () => {
     setCommentCheck(false);
     setCommentDeleting(true);
     deleteComment(comment_id).then(() => {
-      commentAdded ? setCommentAdded(false) : setCommentAdded(true);
+      setComments((comments)=> {
+        return comments.filter((comment)=> {
+          return comment.comment_id !== comment_id
+        })
+      })
       setCommentDeleting(false);
       setCommentDeleted(true)
     });
