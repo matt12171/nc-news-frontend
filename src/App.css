@@ -24,7 +24,7 @@ li {
   justify-content: space-between;
 }
 
-ul {
+#article-list {
   display: flex;
   flex-direction: column;
 
@@ -90,4 +90,17 @@ ul {
 
 button {
   height: 25px;
+}
+
+.topics {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 0px;
+  margin-bottom: 0px;
+}
+
+.topic-item {
+  margin-right: 10px;
+  margin-left: 10px;
 }
