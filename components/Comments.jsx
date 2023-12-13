@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { postComment } from "./axios";
 import { UsernameContext } from "../context/UsernameContext";
 import { deleteComment } from "./axios";
+
 export function timeConvert(datePosted) {
   const old = new Date(`${datePosted}`);
   const today = new Date();
@@ -50,7 +51,7 @@ export const Comments = () => {
       return alert("Comment cannot be empty!");
     }
     setCommentLoading(true);
-    postComment(article_id, event.target[0].value)
+    postComment(article_id, event.target[0].value, user)
       .then((response) => {
         console.log("Comment added");
         commentAdded ? setCommentAdded(false) : setCommentAdded(true);
