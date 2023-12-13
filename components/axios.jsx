@@ -20,9 +20,13 @@ export const patchArticleVote = (article_id, votes) => {
   });
 };
 
-export const postComment = (article_id, comment) => {
+export const postComment = (article_id, comment, user) => {
   return api.post(`/articles/${article_id}/comments`, {
-    username: "grumpy19",
+    username: user,
     body: comment,
   });
 };
+
+export const deleteComment = (comment_id) => {
+  return api.delete(`/comments/${comment_id}`)
+}
