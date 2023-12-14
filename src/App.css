@@ -77,13 +77,11 @@ li {
   color: red;
 }
 
-
 #textboxid {
   width: 84%;
 
   /* font-size: 14pt; */
 }
-
 
 .top-comments-card {
   display: flex;
@@ -93,7 +91,6 @@ li {
 button {
   height: 25px;
 }
-
 
 .topics {
   display: flex;
@@ -112,3 +109,6 @@ ul {
   padding-left: 0px;
 }
 
+.asc {
+  width: 60px;
+}
