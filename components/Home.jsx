@@ -102,7 +102,7 @@ export const Home = (articles) => {
         {topics.map((topic, index) => {
           return (
             <li key={index} className="topic-item">
-              <Link to={`/${topic.slug}`}>{topic.slug}</Link>
+              <Link to={`/${topic.slug}`} className="link">{topic.slug}</Link>
             </li>
           );
         })}
@@ -141,13 +141,13 @@ export const Home = (articles) => {
                 <li key={index}>
                   <p>
                     {article.title} -{" "}
-                    <Link to={`/article/${article.article_id}`}>More info</Link>
+                    <Link to={`/article/${article.article_id}`} className="link moreInfo">More info</Link>
                   </p>{" "}
                   <div className="bottom-of-article">
                     <p>
                       - <b>{article.author}</b> {timeConvert(article.created_at)}
                     </p>
-                    <Link to={`/article/${article.article_id}/comments`}>
+                    <Link to={`/article/${article.article_id}/comments`} className="link">
                       <p>{article.comment_count} comments</p>
                     </Link>
                     <div className="article-vote">
@@ -178,13 +178,13 @@ export const Home = (articles) => {
               <li key={index}>
                 <p>
                   {article.title} -{" "}
-                  <Link to={`/article/${article.article_id}`}>More info</Link>
+                  <Link to={`/article/${article.article_id}`} className="link moreInfo">More info</Link>
                 </p>{" "}
                 <div className="bottom-of-article">
                   <p>
                     - <b>{article.author}</b> {timeConvert(article.created_at)}
                   </p>
-                  <Link to={`/article/${article.article_id}/comments`}>
+                  <Link to={`/article/${article.article_id}/comments`} className="link">
                     <p>{article.comment_count} comments</p>
                   </Link>
                   <div className="article-vote">

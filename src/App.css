@@ -1,15 +1,43 @@
+
+
+#root {
+  background-color: #ddd0c8;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: black;
+}
+
+.link {
+  text-decoration: none;
+  color: black;
+}
+
+.panel {
+  border: #323232 solid 1px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-right: 18px;
+  padding-left: 18px;
+  border-radius: 16px;
+  width: 120px;
+  text-align: center;
+  background-color: #323232;
+  color: white;
+}
+
+.moreInfo {
+  text-decoration: underline;
+}
+
 header {
-  border: black solid 1px;
   text-align: center;
   padding: 30px;
+  font-size: 30px;
 }
 
 .panelButtons {
   display: flex;
-  align-items: center;
-  justify-content: space-evenly;
+  justify-content: space-around;
   margin: 20px;
-  /* position: fixed; */
 }
 
 li {
