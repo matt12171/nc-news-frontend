@@ -77,6 +77,8 @@ export const Home = (articles) => {
         })}
       </ul>
 
+      {filterTopic ? <p>Category - {filterTopic}</p> : ''}
+
       <div className="topic-links"></div>
       <ul id="article-list">
         {articles.element.map((article, index) => {
