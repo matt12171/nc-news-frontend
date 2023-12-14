@@ -32,7 +32,7 @@ export function timeConvert(datePosted) {
   }
 }
 
-export const Comments = () => {
+export const Comments = (props) => {
   const { article_id } = useParams();
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,12 +40,12 @@ export const Comments = () => {
   const [commentAdded, setCommentAdded] = useState(false);
   const [commentLoading, setCommentLoading] = useState(false);
   const [commentDeleting, setCommentDeleting] = useState(false);
-  const [commentDeleted, setCommentDeleted] = useState(false)
+  const [commentDeleted, setCommentDeleted] = useState(false);
   const { user, setUser } = useContext(UsernameContext);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setCommentDeleted(false)
+    setCommentDeleted(false);
     setCommentCheck(false);
     if (event.target[0].value.length === 0) {
       return Toastify({
@@ -70,31 +70,37 @@ export const Comments = () => {
   };
 
   const handleDelete = (comment_id) => {
-    setCommentDeleted(false)
+    setCommentDeleted(false);
     setCommentCheck(false);
     setCommentDeleting(true);
-    deleteComment(comment_id).then(() => {
-      setComments((comments)=> {
-        return comments.filter((comment)=> {
-          return comment.comment_id !== comment_id
-        })
+    deleteComment(comment_id)
+      .then(() => {
+        setComments((comments) => {
+          return comments.filter((comment) => {
+            return comment.comment_id !== comment_id;
+          });
+        });
+        setCommentDeleting(false);
+        setCommentDeleted(true);
       })
-      setCommentDeleting(false);
-      setCommentDeleted(true)
-    }).catch((err)=> {
-      setCommentDeleting(false)
-      Toastify({
-        text: "Unable to delete",
-        duration: 4000,
-      }).showToast();
-    })
+      .catch((err) => {
+        setCommentDeleting(false);
+        Toastify({
+          text: "Unable to delete",
+          duration: 4000,
+        }).showToast();
+      });
   };
 
   useEffect(() => {
-    getComments(article_id).then((response) => {
-      setComments(response.data.comments);
-      setIsLoading(false);
-    });
+    getComments(article_id)
+      .then((response) => {
+        setComments(response.data.comments);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        props.setError({ err });
+      });
   }, [commentAdded]);
 
   if (isLoading) {
