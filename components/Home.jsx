@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { patchArticleVote } from "./axios";
-
+import { timeConvert } from "../utils";
 import { getTopics } from "./axios";
 import { useParams } from "react-router-dom";
 
@@ -12,6 +12,38 @@ export const Home = (articles) => {
   const [topClickedArrowIndex, setTopClickedArrowIndex] = useState(null);
   const [bottomClickedArrowIndex, setBottomClickedArrowIndex] = useState(null);
   const [topics, setTopics] = useState([]);
+  const [sortBy, setSortBy] = useState();
+  const [order, setOrder] = useState("desc");
+
+  if (sortBy === "votes" && order === "desc") {
+    articles.element.sort((a, b) => {
+      return b.votes - a.votes;
+    });
+  } else if (sortBy === "votes" && order === "asc") {
+    articles.element.sort((a, b) => {
+      return a.votes - b.votes;
+    });
+  } else if (sortBy === "comment count" && order === "desc") {
+    articles.element.sort((a, b) => {
+      return b.comment_count - a.comment_count;
+    });
+  } else if (sortBy === "comment count" && order === "asc") {
+    articles.element.sort((a, b) => {
+      return a.comment_count - b.comment_count;
+    });
+  } else if (sortBy === "date" && order === "desc") {
+    articles.element.sort((a, b) => {
+      let da = new Date(a.created_at);
+      let db = new Date(b.created_at);
+      return db - da;
+    });
+  } else if (sortBy === "date" && order === "asc") {
+    articles.element.sort((a, b) => {
+      let da = new Date(a.created_at);
+      let db = new Date(b.created_at);
+      return da - db;
+    });
+  }
 
   const arrowClicked = (index, direction) => {
     for (let i = 0; i < votedPosts.length; i++) {
@@ -57,7 +89,6 @@ export const Home = (articles) => {
     }
   };
 
-
   useEffect(() => {
     getTopics().then((response) => {
       setTopics(response.data.topics);
@@ -77,7 +108,29 @@ export const Home = (articles) => {
         })}
       </ul>
 
-      {filterTopic ? <p>Category - {filterTopic}</p> : ''}
+      {filterTopic ? <p>Category - {filterTopic}</p> : ""}
+
+      <label htmlFor="sortBy">Sort by:</label>
+      <div className="sort-by">
+        <select
+          name="sortBy"
+          id="sortBy"
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="date">Date</option>
+          <option value="comment count">Comment Count</option>
+          <option value="votes">Votes</option>
+        </select>
+        <select
+          name="orderBy"
+          id="orderBy"
+          onChange={(e) => setOrder(e.target.value)}
+          className="asc"
+        >
+          <option value="desc">Desc</option>
+          <option value="asc">Asc</option>
+        </select>
+      </div>
 
       <div className="topic-links"></div>
       <ul id="article-list">
@@ -91,7 +144,9 @@ export const Home = (articles) => {
                     <Link to={`/article/${article.article_id}`}>More info</Link>
                   </p>{" "}
                   <div className="bottom-of-article">
-                    <p>- {article.author}</p>
+                    <p>
+                      - <b>{article.author}</b> {timeConvert(article.created_at)}
+                    </p>
                     <Link to={`/article/${article.article_id}/comments`}>
                       <p>{article.comment_count} comments</p>
                     </Link>
@@ -126,7 +181,9 @@ export const Home = (articles) => {
                   <Link to={`/article/${article.article_id}`}>More info</Link>
                 </p>{" "}
                 <div className="bottom-of-article">
-                  <p>- {article.author}</p>
+                  <p>
+                    - <b>{article.author}</b> {timeConvert(article.created_at)}
+                  </p>
                   <Link to={`/article/${article.article_id}/comments`}>
                     <p>{article.comment_count} comments</p>
                   </Link>

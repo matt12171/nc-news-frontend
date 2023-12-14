@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { getArticlesId } from "./axios";
 import { getComments } from "./axios";
-import { timeConvert } from "./Comments";
+import { timeConvert } from "../utils";
 
 export const Article = () => {
   const { article_id } = useParams();
@@ -37,7 +37,10 @@ export const Article = () => {
   return (
     <div className="card">
       <h3>{singleArticle.title}</h3>
-      <p>Submitted by <b>{singleArticle.author}</b> {timeConvert(singleArticle.created_at)}</p>
+      <p>
+        Submitted by <b>{singleArticle.author}</b>{" "}
+        {timeConvert(singleArticle.created_at)}
+      </p>
       <img className="article-img" src={`${singleArticle.article_img_url}`} />
       <p>{singleArticle.body}</p>
       <h4>Top Comment</h4>
