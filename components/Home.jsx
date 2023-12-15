@@ -8,6 +8,7 @@ import { Card } from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { Dropdown, Form } from "react-bootstrap";
+import Spinner from "react-bootstrap/Spinner";
 
 const votedPosts = [];
 
@@ -18,31 +19,32 @@ export const Home = (props) => {
   const [topics, setTopics] = useState([]);
   const [sortBy, setSortBy] = useState();
   const [order, setOrder] = useState("desc");
+  const [isLoading, setIsLoading] = useState(true);
 
   if (sortBy === "votes" && order === "desc") {
-    articles.element.sort((a, b) => {
+    props.element.sort((a, b) => {
       return b.votes - a.votes;
     });
   } else if (sortBy === "votes" && order === "asc") {
-    articles.element.sort((a, b) => {
+    props.element.sort((a, b) => {
       return a.votes - b.votes;
     });
   } else if (sortBy === "comment count" && order === "desc") {
-    articles.element.sort((a, b) => {
+    props.element.sort((a, b) => {
       return b.comment_count - a.comment_count;
     });
   } else if (sortBy === "comment count" && order === "asc") {
-    articles.element.sort((a, b) => {
+    props.element.sort((a, b) => {
       return a.comment_count - b.comment_count;
     });
   } else if (sortBy === "date" && order === "desc") {
-    articles.element.sort((a, b) => {
+    props.element.sort((a, b) => {
       let da = new Date(a.created_at);
       let db = new Date(b.created_at);
       return db - da;
     });
   } else if (sortBy === "date" && order === "asc") {
-    articles.element.sort((a, b) => {
+    props.element.sort((a, b) => {
       let da = new Date(a.created_at);
       let db = new Date(b.created_at);
       return da - db;
@@ -97,11 +99,21 @@ export const Home = (props) => {
     getTopics()
       .then((response) => {
         setTopics(response.data.topics);
+        setIsLoading(false);
       })
       .catch((err) => {
-        props.setError({err});
+        props.setError({ err });
       });
   }, []);
+
+  if (isLoading) {
+    return (
+      <Spinner animation="border" role="status" style={{marginTop: '300px'}}>
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    );
+  }
+
   return (
     <div className="home">
       <h3 className="topic-title">Topics</h3>
@@ -109,45 +121,81 @@ export const Home = (props) => {
         {topics.map((topic, index) => {
           return (
             <li key={index} className="topic-item">
-              <Link to={`/home/${topic.slug}`} className="link-topic">{topic.slug}</Link>
+              <Link to={`/home/${topic.slug}`} className="link-topic">
+                {topic.slug}
+              </Link>
             </li>
           );
         })}
       </ul>
-      
-      <div className="toggles">
-      <Dropdown className="sort-by">
-        <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="lg" style={{backgroundColor: '#323232', textAlign: 'center', height: '50px'}}>
-          {sortBy ? sortBy : 'Sort by'}
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={() => setSortBy('date')}>Date</Dropdown.Item>
-          <Dropdown.Item onClick={() => setSortBy('comment count')}>Comment Count</Dropdown.Item>
-          <Dropdown.Item onClick={() => setSortBy('votes')}>Votes</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
 
-      <Dropdown className="sort-by">
-        <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="lg" style={{backgroundColor: '#323232', textAlign: 'center', height: '50px'}}>
-          {order}
-        </Dropdown.Toggle>
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={() => setOrder('desc')}>Desc</Dropdown.Item>
-          <Dropdown.Item onClick={() => setOrder('asc')}>Asc</Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
+      <div className="toggles">
+        <Dropdown className="sort-by">
+          <Dropdown.Toggle
+            variant="secondary"
+            id="dropdown-basic"
+            size="lg"
+            style={{
+              backgroundColor: "#323232",
+              textAlign: "center",
+              height: "50px",
+            }}
+          >
+            {sortBy ? sortBy : "Sort by"}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => setSortBy("date")}>
+              Date
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSortBy("comment count")}>
+              Comment Count
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setSortBy("votes")}>
+              Votes
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+
+        <Dropdown className="sort-by">
+          <Dropdown.Toggle
+            variant="secondary"
+            id="dropdown-basic"
+            size="lg"
+            style={{
+              backgroundColor: "#323232",
+              textAlign: "center",
+              height: "50px",
+            }}
+          >
+            {order}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            <Dropdown.Item onClick={() => setOrder("desc")}>Desc</Dropdown.Item>
+            <Dropdown.Item onClick={() => setOrder("asc")}>Asc</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </div>
 
-      {filterTopic ? <p id="category">{filterTopic[0].toUpperCase() + filterTopic.slice(1)}</p> : ""}
+      {filterTopic ? (
+        <p id="category">
+          {filterTopic[0].toUpperCase() + filterTopic.slice(1)}
+        </p>
+      ) : (
+        ""
+      )}
 
       <div className="topic-links"></div>
       <ul id="article-list">
         <Row xs={1} md={1} lg={2} xl={2} xxl={3} className="g-4">
-          {articles.element.map((article, index) => {
+          {props.element.map((article, index) => {
             if (filterTopic) {
               if (filterTopic === article.topic) {
                 return (
-                  <Col key={index} className="col" style={{ padding: "0px", marginTop: '0px'}}>
+                  <Col
+                    key={index}
+                    className="col"
+                    style={{ padding: "0px", marginTop: "0px" }}
+                  >
                     <Card className="mb-3" style={{ width: "24rem" }}>
                       <Card.Body>
                         <Card.Title className="card-title">

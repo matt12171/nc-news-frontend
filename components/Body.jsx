@@ -5,6 +5,7 @@ import { Article } from "./Article";
 import { getArticles } from "./axios";
 import { Comments } from "./Comments";
 import { Error } from "./Error";
+import { Users } from "./Users";
 
 export const Body = () => {
   const [articles, setArticles] = useState([]);
@@ -41,6 +42,7 @@ export const Body = () => {
         />
         <Route path="/article/:article_id" element={<Article error={error} setError={setError}/>} />
         <Route path="/article/:article_id/comments" element={<Comments error={error} setError={setError}/>} />
+        <Route path='/users' element={<Users />} />
       </Routes>
     </div>
   );

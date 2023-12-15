@@ -41,3 +41,7 @@ export const patchCommentVote = (comment_id, votes) => {
   });
 };
 
+export const getUsers = () => {
+  return api.get('/users')
+}
+

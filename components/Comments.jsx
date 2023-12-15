@@ -6,7 +6,7 @@ import { UsernameContext } from "../context/UsernameContext";
 import { deleteComment } from "./axios";
 import { timeConvert } from "../utils";
 import { Card, Button } from "react-bootstrap";
-
+import Spinner from "react-bootstrap/Spinner";
 
 const votedPosts = [];
 
@@ -22,7 +22,6 @@ export const Comments = (props) => {
   const { user, setUser } = useContext(UsernameContext);
   const [topClickedArrowIndex, setTopClickedArrowIndex] = useState(null);
   const [bottomClickedArrowIndex, setBottomClickedArrowIndex] = useState(null);
-
 
   const arrowClicked = (index, direction) => {
     for (let i = 0; i < votedPosts.length; i++) {
@@ -129,7 +128,11 @@ export const Comments = (props) => {
   }, [commentAdded]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Spinner animation="border" role="status" style={{ marginTop: "300px" }}>
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    );
   }
 
   return (
@@ -176,7 +179,7 @@ export const Comments = (props) => {
                   Submitted by <b>{comment.author}</b>{" "}
                   {timeConvert(comment.created_at)}
                 </small>
-               
+
                 <div className="article-vote">
                   <i
                     className={`fa-solid fa-arrow-up ${
