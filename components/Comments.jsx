@@ -1,36 +1,14 @@
 import { useParams } from "react-router-dom";
-import { getComments } from "./axios";
+import { getComments, patchCommentVote } from "./axios";
 import { useContext, useEffect, useState } from "react";
 import { postComment } from "./axios";
 import { UsernameContext } from "../context/UsernameContext";
 import { deleteComment } from "./axios";
+import { timeConvert } from "../utils";
+import { Card, Button } from "react-bootstrap";
 
-export function timeConvert(datePosted) {
-  const old = new Date(`${datePosted}`);
-  const today = new Date();
 
-  const differenceInSeconds = Math.floor((today - old) / 1000);
-
-  const minutesDifference = Math.floor(differenceInSeconds / 60);
-
-  if (minutesDifference < 60) {
-    return `${minutesDifference} minute${
-      minutesDifference !== 1 ? "s" : ""
-    } ago`;
-  } else if (minutesDifference < 1440) {
-    const hoursDifference = Math.floor(minutesDifference / 60);
-    return `${hoursDifference} hour${hoursDifference !== 1 ? "s" : ""} ago`;
-  } else {
-    const daysDifference = Math.floor(minutesDifference / 1440);
-    if (daysDifference < 365) {
-      const yearsDifference = Math.floor(daysDifference / 365);
-      return `${daysDifference} day${daysDifference !== 1 ? "s" : ""} ago`;
-    } else {
-      const yearsDifference = Math.floor(daysDifference / 365);
-      return `${yearsDifference} year${yearsDifference !== 1 ? "s" : ""} ago`;
-    }
-  }
-}
+const votedPosts = [];
 
 export const Comments = (props) => {
   const { article_id } = useParams();
@@ -42,6 +20,53 @@ export const Comments = (props) => {
   const [commentDeleting, setCommentDeleting] = useState(false);
   const [commentDeleted, setCommentDeleted] = useState(false);
   const { user, setUser } = useContext(UsernameContext);
+  const [topClickedArrowIndex, setTopClickedArrowIndex] = useState(null);
+  const [bottomClickedArrowIndex, setBottomClickedArrowIndex] = useState(null);
+
+
+  const arrowClicked = (index, direction) => {
+    for (let i = 0; i < votedPosts.length; i++) {
+      if (comments[index].comment_id === votedPosts[i]) {
+        return Toastify({
+          text: "Already voted!",
+          duration: 4000,
+        }).showToast();
+      }
+    }
+    if (direction === "up") {
+      setTopClickedArrowIndex(topClickedArrowIndex === index ? null : index);
+      setBottomClickedArrowIndex(null);
+      comments[index].votes += 1;
+      patchCommentVote(comments[index].comment_id, 1)
+        .then((response) => {
+          console.log("Vote added");
+        })
+        .catch((err) => {
+          Toastify({
+            text: "Vote did not update",
+            duration: 4000,
+          }).showToast();
+        });
+      votedPosts.push(comments[index].comment_id);
+    } else if (direction === "down") {
+      setBottomClickedArrowIndex(
+        bottomClickedArrowIndex === index ? null : index
+      );
+      setTopClickedArrowIndex(null);
+      comments[index].votes -= 1;
+      patchCommentVote(comments[index].comment_id, -1)
+        .then((response) => {
+          console.log("Vote added");
+        })
+        .catch((err) => {
+          Toastify({
+            text: "Vote did not update",
+            duration: 4000,
+          }).showToast();
+        });
+      votedPosts.push(comments[index].comment_id);
+    }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -108,9 +133,9 @@ export const Comments = (props) => {
   }
 
   return (
-    <div>
+    <div className="comment-section">
       <h3 className="comment-title">Comments</h3>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="comment-input">
         <label>
           <input
             type="text"
@@ -125,29 +150,52 @@ export const Comments = (props) => {
       {commentDeleted ? <p>Comment Deleted!</p> : ""}
       {commentCheck ? <p>Comment Added!</p> : ""}
       {commentLoading ? <p>Comment loading...</p> : ""}
-      <ul>
+      <ul className="list-of-comments">
         {comments.map((comment, index) => {
           return (
-            <li key={index}>
-              <div className="top-comments-card">
-                <p>{comment.body}</p>
-                {user === comment.author ? (
-                  <button onClick={() => handleDelete(comment.comment_id)}>
+            <Card
+              key={index}
+              className="mb-3"
+              style={{ maxWidth: "500px", minWidth: "420px" }}
+            >
+              <Card.Body>
+                <Card.Text>{comment.body}</Card.Text>
+                {user === comment.author && (
+                  <Button
+                    variant="dark"
+                    style={{ height: "30px", fontSize: "14px" }}
+                    className="comment-button"
+                    onClick={() => handleDelete(comment.comment_id)}
+                  >
                     Delete
-                  </button>
-                ) : (
-                  ""
+                  </Button>
                 )}
-              </div>
-
-              <div className="bottom-comments">
-                <p>
+              </Card.Body>
+              <Card.Footer className="comment-footer">
+                <small className="text-muted">
                   Submitted by <b>{comment.author}</b>{" "}
                   {timeConvert(comment.created_at)}
-                </p>
-                <p>{comment.votes} votes</p>
-              </div>
-            </li>
+                </small>
+               
+                <div className="article-vote">
+                  <i
+                    className={`fa-solid fa-arrow-up ${
+                      topClickedArrowIndex === index ? "top-arrow-clicked" : ""
+                    }`}
+                    onClick={() => arrowClicked(index, "up", comments)}
+                  ></i>
+                  <p className="vote-numb">{comment.votes}</p>
+                  <i
+                    className={`fa-solid fa-arrow-down ${
+                      bottomClickedArrowIndex === index
+                        ? "bottom-arrow-clicked"
+                        : ""
+                    }`}
+                    onClick={() => arrowClicked(index, "down")}
+                  ></i>
+                </div>
+              </Card.Footer>
+            </Card>
           );
         })}
       </ul>

@@ -34,3 +34,10 @@ export const deleteComment = (comment_id) => {
 export const getTopics = () => {
   return api.get("/topics");
 };
+
+export const patchCommentVote = (comment_id, votes) => {
+  return api.patch(`/comments/${comment_id}`, {
+    inc_votes: votes,
+  });
+};
+
