@@ -28,9 +28,15 @@ export const postComment = (article_id, comment, user) => {
 };
 
 export const deleteComment = (comment_id) => {
-  return api.delete(`/comments/${comment_id}`)
-}
+  return api.delete(`/comments/${comment_id}`);
+};
 
 export const getTopics = () => {
-  return api.get('/topics')
-}
+  return api.get("/topics");
+};
+
+export const patchCommentVote = (comment_id, votes) => {
+  return api.patch(`/comments/${comment_id}`, {
+    inc_votes: votes,
+  });
+};

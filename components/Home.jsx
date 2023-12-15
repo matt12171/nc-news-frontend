@@ -4,6 +4,10 @@ import { patchArticleVote } from "./axios";
 import { timeConvert } from "../utils";
 import { getTopics } from "./axios";
 import { useParams } from "react-router-dom";
+import { Card } from "react-bootstrap";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import { Dropdown, Form } from "react-bootstrap";
 
 const votedPosts = [];
 
@@ -96,121 +100,190 @@ export const Home = (articles) => {
   }, []);
   return (
     <div className="home">
-      <h2>Articles</h2>
-      <h3>Topics</h3>
+      <h3 className="topic-title">Topics</h3>
       <ul className="topics">
         {topics.map((topic, index) => {
           return (
             <li key={index} className="topic-item">
-              <Link to={`/${topic.slug}`} className="link">{topic.slug}</Link>
+              <Link to={`/${topic.slug}`} className="link-topic">
+                {topic.slug}
+              </Link>
             </li>
           );
         })}
       </ul>
 
-      {filterTopic ? <p>Category - {filterTopic}</p> : ""}
+      
+      <div className="toggles">
+      <Dropdown className="sort-by">
+        <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="lg" style={{backgroundColor: '#323232', textAlign: 'center', height: '50px'}}>
+          {sortBy ? sortBy : 'Sort by'}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={() => setSortBy('date')}>Date</Dropdown.Item>
+          <Dropdown.Item onClick={() => setSortBy('comment count')}>Comment Count</Dropdown.Item>
+          <Dropdown.Item onClick={() => setSortBy('votes')}>Votes</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
 
-      <label htmlFor="sortBy">Sort by:</label>
-      <div className="sort-by">
-        <select
-          name="sortBy"
-          id="sortBy"
-          onChange={(e) => setSortBy(e.target.value)}
-        >
-          <option value="date">Date</option>
-          <option value="comment count">Comment Count</option>
-          <option value="votes">Votes</option>
-        </select>
-        <select
-          name="orderBy"
-          id="orderBy"
-          onChange={(e) => setOrder(e.target.value)}
-          className="asc"
-        >
-          <option value="desc">Desc</option>
-          <option value="asc">Asc</option>
-        </select>
+      <Dropdown className="sort-by">
+        <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="lg" style={{backgroundColor: '#323232', textAlign: 'center', height: '50px'}}>
+          {order}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={() => setOrder('desc')}>Desc</Dropdown.Item>
+          <Dropdown.Item onClick={() => setOrder('asc')}>Asc</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       </div>
+
+      {filterTopic ? <p id="category">{filterTopic[0].toUpperCase() + filterTopic.slice(1)}</p> : ""}
 
       <div className="topic-links"></div>
       <ul id="article-list">
-        {articles.element.map((article, index) => {
-          if (filterTopic) {
-            if (filterTopic === article.topic) {
+        <Row xs={1} md={1} lg={2} xl={2} xxl={3} className="g-4">
+          {articles.element.map((article, index) => {
+            if (filterTopic) {
+              if (filterTopic === article.topic) {
+                return (
+                  <Col key={index} className="col" style={{ padding: "0px", marginTop: '0px'}}>
+                    <Card className="mb-3" style={{ width: "24rem" }}>
+                      <Card.Body>
+                        <Card.Title className="card-title">
+                          {article.title}
+                        </Card.Title>
+                        <Link to={`/article/${article.article_id}`}>
+                          <Card.Img
+                            variant="top"
+                            src={article.article_img_url}
+                            className="article-img"
+                          />
+                        </Link>
+                        <Card.Text>
+                          <Link
+                            to={`/article/${article.article_id}`}
+                            className="link moreInfo"
+                          >
+                            More info
+                          </Link>
+                        </Card.Text>
+                      </Card.Body>
+                      <Card.Footer
+                        className="text-muted bottom-of-article"
+                        style={{
+                          fontSize: "0.9rem",
+                          padding: "0.2rem",
+                        }}
+                      >
+                        <div className="card-author-comments">
+                          <p className="author">
+                            - <b>{article.author}</b>{" "}
+                            {timeConvert(article.created_at)}
+                          </p>
+                          <Link
+                            to={`/article/${article.article_id}/comments`}
+                            className="link"
+                          >
+                            <p className="comments">
+                              {article.comment_count} comments
+                            </p>
+                          </Link>
+                        </div>
+                        <div className="article-vote">
+                          <i
+                            className={`fa-solid fa-arrow-up ${
+                              topClickedArrowIndex === index
+                                ? "top-arrow-clicked"
+                                : ""
+                            }`}
+                            onClick={() => arrowClicked(index, "up", articles)}
+                          ></i>
+                          <p className="vote-numb">{article.votes}</p>
+                          <i
+                            className={`fa-solid fa-arrow-down ${
+                              bottomClickedArrowIndex === index
+                                ? "bottom-arrow-clicked"
+                                : ""
+                            }`}
+                            onClick={() => arrowClicked(index, "down")}
+                          ></i>
+                        </div>
+                      </Card.Footer>
+                    </Card>
+                  </Col>
+                );
+              }
+            } else {
               return (
-                <li key={index}>
-                  <p>
-                    {article.title} -{" "}
-                    <Link to={`/article/${article.article_id}`} className="link moreInfo">More info</Link>
-                  </p>{" "}
-                  <div className="bottom-of-article">
-                    <p>
-                      - <b>{article.author}</b> {timeConvert(article.created_at)}
-                    </p>
-                    <Link to={`/article/${article.article_id}/comments`} className="link">
-                      <p>{article.comment_count} comments</p>
-                    </Link>
-                    <div className="article-vote">
-                      <i
-                        className={`fa-solid fa-arrow-up ${
-                          topClickedArrowIndex === index
-                            ? "top-arrow-clicked"
-                            : ""
-                        }`}
-                        onClick={() => arrowClicked(index, "up", articles)}
-                      ></i>
-                      <p className="vote-numb">{article.votes}</p>
-                      <i
-                        className={`fa-solid fa-arrow-down ${
-                          bottomClickedArrowIndex === index
-                            ? "bottom-arrow-clicked"
-                            : ""
-                        }`}
-                        onClick={() => arrowClicked(index, "down")}
-                      ></i>
-                    </div>
-                  </div>
-                </li>
+                <Col key={index} className="col" style={{ padding: "0px" }}>
+                  <Card className="mb-3" style={{ width: "24rem" }}>
+                    <Card.Body>
+                      <Card.Title className="card-title">
+                        {article.title}
+                      </Card.Title>
+                      <Link to={`/article/${article.article_id}`}>
+                        <Card.Img
+                          variant="top"
+                          src={article.article_img_url}
+                          className="article-img"
+                        />
+                      </Link>
+                      <Card.Text>
+                        <Link
+                          to={`/article/${article.article_id}`}
+                          className="link moreInfo"
+                        >
+                          More info
+                        </Link>
+                      </Card.Text>
+                    </Card.Body>
+                    <Card.Footer
+                      className="text-muted bottom-of-article"
+                      style={{
+                        fontSize: "0.9rem",
+                        padding: "0.2rem",
+                      }}
+                    >
+                      <div className="card-author-comments">
+                        <p className="author">
+                          - <b>{article.author}</b>{" "}
+                          {timeConvert(article.created_at)}
+                        </p>
+                        <Link
+                          to={`/article/${article.article_id}/comments`}
+                          className="link"
+                        >
+                          <p className="comments">
+                            {article.comment_count} comments
+                          </p>
+                        </Link>
+                      </div>
+                      <div className="article-vote">
+                        <i
+                          className={`fa-solid fa-arrow-up ${
+                            topClickedArrowIndex === index
+                              ? "top-arrow-clicked"
+                              : ""
+                          }`}
+                          onClick={() => arrowClicked(index, "up", articles)}
+                        ></i>
+                        <p className="vote-numb">{article.votes}</p>
+                        <i
+                          className={`fa-solid fa-arrow-down ${
+                            bottomClickedArrowIndex === index
+                              ? "bottom-arrow-clicked"
+                              : ""
+                          }`}
+                          onClick={() => arrowClicked(index, "down")}
+                        ></i>
+                      </div>
+                    </Card.Footer>
+                  </Card>
+                </Col>
               );
             }
-          } else {
-            return (
-              <li key={index}>
-                <p>
-                  {article.title} -{" "}
-                  <Link to={`/article/${article.article_id}`} className="link moreInfo">More info</Link>
-                </p>{" "}
-                <div className="bottom-of-article">
-                  <p>
-                    - <b>{article.author}</b> {timeConvert(article.created_at)}
-                  </p>
-                  <Link to={`/article/${article.article_id}/comments`} className="link">
-                    <p>{article.comment_count} comments</p>
-                  </Link>
-                  <div className="article-vote">
-                    <i
-                      className={`fa-solid fa-arrow-up ${
-                        topClickedArrowIndex === index
-                          ? "top-arrow-clicked"
-                          : ""
-                      }`}
-                      onClick={() => arrowClicked(index, "up", articles)}
-                    ></i>
-                    <p className="vote-numb">{article.votes}</p>
-                    <i
-                      className={`fa-solid fa-arrow-down ${
-                        bottomClickedArrowIndex === index
-                          ? "bottom-arrow-clicked"
-                          : ""
-                      }`}
-                      onClick={() => arrowClicked(index, "down")}
-                    ></i>
-                  </div>
-                </div>
-              </li>
-            );
-          }
-        })}
+          })}
+        </Row>
       </ul>
     </div>
   );

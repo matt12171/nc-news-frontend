@@ -3,6 +3,7 @@ import { Header } from "../components/Header";
 import { PanelButtons } from "../components/PanelButtons";
 import "./App.css";
 import { Username } from "../context/UsernameContext";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
