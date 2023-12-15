@@ -33,7 +33,7 @@ export const Body = () => {
   return (
     <div id="body">
       <Routes>
-        <Route path="/*" element={<Error />} />
+        <Route path="/*" element={<Error element={error}/>} />
         <Route path="/" element={<Home element={articles} error={error} setError={setError}/>} />
         <Route
           path="/home/:filterTopic"
