@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { Card } from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import { Dropdown, Form } from "react-bootstrap";
 
 const votedPosts = [];
 
@@ -99,13 +100,12 @@ export const Home = (articles) => {
   }, []);
   return (
     <div className="home">
-      <h2>Articles</h2>
-      <h3>Topics</h3>
+      <h3 className="topic-title">Topics</h3>
       <ul className="topics">
         {topics.map((topic, index) => {
           return (
             <li key={index} className="topic-item">
-              <Link to={`/${topic.slug}`} className="link">
+              <Link to={`/${topic.slug}`} className="link-topic">
                 {topic.slug}
               </Link>
             </li>
@@ -113,38 +113,40 @@ export const Home = (articles) => {
         })}
       </ul>
 
-      {filterTopic ? <p>Category - {filterTopic}</p> : ""}
+      
+      <div className="toggles">
+      <Dropdown className="sort-by">
+        <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="lg" style={{backgroundColor: '#323232', textAlign: 'center', height: '50px'}}>
+          {sortBy ? sortBy : 'Sort by'}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={() => setSortBy('date')}>Date</Dropdown.Item>
+          <Dropdown.Item onClick={() => setSortBy('comment count')}>Comment Count</Dropdown.Item>
+          <Dropdown.Item onClick={() => setSortBy('votes')}>Votes</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
 
-      <label htmlFor="sortBy">Sort by:</label>
-      <div className="sort-by">
-        <select
-          name="sortBy"
-          id="sortBy"
-          onChange={(e) => setSortBy(e.target.value)}
-        >
-          <option value="date">Date</option>
-          <option value="comment count">Comment Count</option>
-          <option value="votes">Votes</option>
-        </select>
-        <select
-          name="orderBy"
-          id="orderBy"
-          onChange={(e) => setOrder(e.target.value)}
-          className="asc"
-        >
-          <option value="desc">Desc</option>
-          <option value="asc">Asc</option>
-        </select>
+      <Dropdown className="sort-by">
+        <Dropdown.Toggle variant="secondary" id="dropdown-basic" size="lg" style={{backgroundColor: '#323232', textAlign: 'center', height: '50px'}}>
+          {order}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={() => setOrder('desc')}>Desc</Dropdown.Item>
+          <Dropdown.Item onClick={() => setOrder('asc')}>Asc</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
       </div>
+
+      {filterTopic ? <p id="category">{filterTopic[0].toUpperCase() + filterTopic.slice(1)}</p> : ""}
 
       <div className="topic-links"></div>
       <ul id="article-list">
-        <Row xs={1} md={3} className="g-4">
+        <Row xs={1} md={1} lg={2} xl={2} xxl={3} className="g-4">
           {articles.element.map((article, index) => {
             if (filterTopic) {
               if (filterTopic === article.topic) {
                 return (
-                  <Col key={index} className="col" style={{ padding: "0px" }}>
+                  <Col key={index} className="col" style={{ padding: "0px", marginTop: '0px'}}>
                     <Card className="mb-3" style={{ width: "24rem" }}>
                       <Card.Body>
                         <Card.Title className="card-title">

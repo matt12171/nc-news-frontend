@@ -35,7 +35,7 @@ export const Article = () => {
   if (isLoading) {
   }
   return (
-    <div className="card">
+    <div className="single-article">
       <h3>{singleArticle.title}</h3>
       <p>
         Submitted by <b>{singleArticle.author}</b>{" "}
@@ -43,9 +43,13 @@ export const Article = () => {
       </p>
       <img className="article-img" src={`${singleArticle.article_img_url}`} />
       <p>{singleArticle.body}</p>
+      <div className="top-comment">
       <h4>Top Comment</h4>
       <p>{topVote.body}</p>
+      
       <Link to={`/article/${article_id}/comments`}>See all comments..</Link>
+      </div>
+      <div className="article-bottom-space"></div>
     </div>
   );
 };
