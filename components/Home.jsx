@@ -245,7 +245,7 @@ export const Home = (props) => {
                                 ? "top-arrow-clicked"
                                 : ""
                             }`}
-                            onClick={() => arrowClicked(index, "up", articles)}
+                            onClick={() => arrowClicked(index, "up")}
                           ></i>
                           <p className="vote-numb">{article.votes}</p>
                           <i
@@ -314,7 +314,7 @@ export const Home = (props) => {
                               ? "top-arrow-clicked"
                               : ""
                           }`}
-                          onClick={() => arrowClicked(index, "up", articles)}
+                          onClick={() => arrowClicked(index, "up")}
                         ></i>
                         <p className="vote-numb">{article.votes}</p>
                         <i
