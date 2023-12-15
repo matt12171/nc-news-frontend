@@ -5,8 +5,9 @@ import { postComment } from "./axios";
 import { UsernameContext } from "../context/UsernameContext";
 import { deleteComment } from "./axios";
 import { timeConvert } from "../utils";
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Form } from "react-bootstrap";
 import Spinner from "react-bootstrap/Spinner";
+
 
 const votedPosts = [];
 
@@ -138,17 +139,15 @@ export const Comments = (props) => {
   return (
     <div className="comment-section">
       <h3 className="comment-title">Comments</h3>
-      <form onSubmit={handleSubmit} className="comment-input">
-        <label>
-          <input
-            type="text"
-            name="name"
-            placeholder="Write a comment..."
-            id="textboxid"
-          />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+      <Form onSubmit={handleSubmit} className="comment-input" >
+      <Form.Group controlId="textboxid">
+        <Form.Control type="text" placeholder="Write a comment..." />
+      </Form.Group>
+
+      <Button variant="primary" type="submit" style={{height: '38px'}}>
+        Submit
+      </Button>
+    </Form>
       {commentDeleting ? <p>Comment Deleting...</p> : ""}
       {commentDeleted ? <p>Comment Deleted!</p> : ""}
       {commentCheck ? <p>Comment Added!</p> : ""}
