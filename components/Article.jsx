@@ -5,17 +5,21 @@ import { getArticlesId } from "./axios";
 import { getComments } from "./axios";
 import { timeConvert } from "../utils";
 
-export const Article = () => {
+export const Article = (props) => {
   const { article_id } = useParams();
   const [singleArticle, setSingleArticle] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [topVote, setTopVote] = useState("");
 
   useEffect(() => {
-    getArticlesId(article_id).then((response) => {
-      setSingleArticle(response.data);
-      setIsLoading(false);
-    });
+    getArticlesId(article_id)
+      .then((response) => {
+        setSingleArticle(response.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        props.setError({ err });
+      });
   }, []);
 
   useEffect(() => {
@@ -27,9 +31,14 @@ export const Article = () => {
           maxVotes = currentObject.votes;
           maxVotedObject = currentObject;
         }
-      });
+      })
       setTopVote(maxVotedObject);
-    });
+    }).catch((err)=> {
+      Toastify({
+        text: "Unable to load top comment",
+        duration: 4000,
+      }).showToast();
+    })
   }, []);
 
   if (isLoading) {

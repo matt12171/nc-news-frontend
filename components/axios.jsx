@@ -40,3 +40,4 @@ export const patchCommentVote = (comment_id, votes) => {
     inc_votes: votes,
   });
 };
+

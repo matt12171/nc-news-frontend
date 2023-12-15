@@ -10,7 +10,7 @@ import { Card, Button } from "react-bootstrap";
 
 const votedPosts = [];
 
-export const Comments = () => {
+export const Comments = (props) => {
   const { article_id } = useParams();
   const [comments, setComments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -118,10 +118,14 @@ export const Comments = () => {
   };
 
   useEffect(() => {
-    getComments(article_id).then((response) => {
-      setComments(response.data.comments);
-      setIsLoading(false);
-    });
+    getComments(article_id)
+      .then((response) => {
+        setComments(response.data.comments);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        props.setError({ err });
+      });
   }, [commentAdded]);
 
   if (isLoading) {

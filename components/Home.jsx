@@ -11,7 +11,7 @@ import { Dropdown, Form } from "react-bootstrap";
 
 const votedPosts = [];
 
-export const Home = (articles) => {
+export const Home = (props) => {
   const { filterTopic } = useParams();
   const [topClickedArrowIndex, setTopClickedArrowIndex] = useState(null);
   const [bottomClickedArrowIndex, setBottomClickedArrowIndex] = useState(null);
@@ -51,7 +51,7 @@ export const Home = (articles) => {
 
   const arrowClicked = (index, direction) => {
     for (let i = 0; i < votedPosts.length; i++) {
-      if (articles.element[index].article_id === votedPosts[i]) {
+      if (props.element[index].article_id === votedPosts[i]) {
         return Toastify({
           text: "Already voted!",
           duration: 4000,
@@ -61,8 +61,8 @@ export const Home = (articles) => {
     if (direction === "up") {
       setTopClickedArrowIndex(topClickedArrowIndex === index ? null : index);
       setBottomClickedArrowIndex(null);
-      articles.element[index].votes += 1;
-      patchArticleVote(articles.element[index].article_id, 1)
+      props.element[index].votes += 1;
+      patchArticleVote(props.element[index].article_id, 1)
         .then((response) => {
           console.log("Vote added");
         })
@@ -72,14 +72,14 @@ export const Home = (articles) => {
             duration: 4000,
           }).showToast();
         });
-      votedPosts.push(articles.element[index].article_id);
+      votedPosts.push(props.element[index].article_id);
     } else if (direction === "down") {
       setBottomClickedArrowIndex(
         bottomClickedArrowIndex === index ? null : index
       );
       setTopClickedArrowIndex(null);
-      articles.element[index].votes -= 1;
-      patchArticleVote(articles.element[index].article_id, -1)
+      props.element[index].votes -= 1;
+      patchArticleVote(props.element[index].article_id, -1)
         .then((response) => {
           console.log("Vote added");
         })
@@ -89,14 +89,18 @@ export const Home = (articles) => {
             duration: 4000,
           }).showToast();
         });
-      votedPosts.push(articles.element[index].article_id);
+      votedPosts.push(props.element[index].article_id);
     }
   };
 
   useEffect(() => {
-    getTopics().then((response) => {
-      setTopics(response.data.topics);
-    });
+    getTopics()
+      .then((response) => {
+        setTopics(response.data.topics);
+      })
+      .catch((err) => {
+        props.setError({err});
+      });
   }, []);
   return (
     <div className="home">
@@ -105,14 +109,11 @@ export const Home = (articles) => {
         {topics.map((topic, index) => {
           return (
             <li key={index} className="topic-item">
-              <Link to={`/${topic.slug}`} className="link-topic">
-                {topic.slug}
-              </Link>
+              <Link to={`/home/${topic.slug}`} className="link-topic">{topic.slug}</Link>
             </li>
           );
         })}
       </ul>
-
       
       <div className="toggles">
       <Dropdown className="sort-by">
