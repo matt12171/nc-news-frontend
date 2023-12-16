@@ -1,6 +1,6 @@
 # Welcome to my project NC-News. 
 
-This app is a news app that displays articles and comments and allows the user to interact with them on a responsive website.
+This is a news app that displays articles and comments and allows the user to interact with them on a responsive website.
 
 This is a full stack application that uses an [api](https://github.com/matt12171/nc-news) that I built in order to store and display the information.
 
